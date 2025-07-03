@@ -4,7 +4,7 @@ import Layout from '../components/Layout/Layout';
 import ProductCard from '../components/Products/ProductCard';
 import ProductForm from '../components/Products/ProductForm';
 import { Product } from '../types';
-import { Plus } from 'lucide-react';
+import { Package, Plus } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 const Products: React.FC = () => {

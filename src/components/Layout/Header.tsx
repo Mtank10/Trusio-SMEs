@@ -12,10 +12,10 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">ST</span>
+                <span className="text-white font-bold text-sm">TS</span>
               </div>
               <span className="ml-2 text-xl font-semibold text-gray-900">
-                Supply Transparency
+                Trusio SCT
               </span>
             </div>
           </div>

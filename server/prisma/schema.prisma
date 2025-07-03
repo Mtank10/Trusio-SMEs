@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  passwordHash String  @map("password_hash")
+  companyName String   @map("company_name")
+  role        UserRole @default(SME_ADMIN)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  products Product[]
+  surveys  Survey[]
+
+  @@map("users")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  smeId       String   @map("sme_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  sme       User       @relation(fields: [smeId], references: [id], onDelete: Cascade)
+  suppliers Supplier[]
+  surveys   Survey[]
+  reports   Report[]
+
+  @@map("products")
+}
+
+model Supplier {
+  id               String            @id @default(uuid())
+  name             String
+  email            String
+  tier             Int
+  parentSupplierId String?           @map("parent_supplier_id")
+  productId        String            @map("product_id")
+  status           SupplierStatus    @default(PENDING)
+  responseDate     DateTime?         @map("response_date")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  product         Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  parentSupplier  Supplier?         @relation("SupplierHierarchy", fields: [parentSupplierId], references: [id])
+  childSuppliers  Supplier[]        @relation("SupplierHierarchy")
+  surveyResponses SurveyResponse[]
+
+  @@map("suppliers")
+}
+
+model Survey {
+  id           String     @id @default(uuid())
+  productId    String     @map("product_id")
+  supplierTier Int        @map("supplier_tier")
+  questions    Json       // JSONB field for dynamic questions
+  createdBy    String     @map("created_by")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  creator   User             @relation(fields: [createdBy], references: [id])
+  responses SurveyResponse[]
+
+  @@map("surveys")
+}
+
+model SurveyResponse {
+  id            String               @id @default(uuid())
+  surveyId      String               @map("survey_id")
+  supplierEmail String               @map("supplier_email")
+  supplierId    String?              @map("supplier_id")
+  answers       Json                 // JSONB field for dynamic answers
+  status        SurveyResponseStatus @default(PENDING)
+  token         String               @unique // Unique token for invite link
+  submittedAt   DateTime?            @map("submitted_at")
+  createdAt     DateTime             @default(now()) @map("created_at")
+  updatedAt     DateTime             @updatedAt @map("updated_at")
+
+  // Relations
+  survey    Survey     @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  supplier  Supplier?  @relation(fields: [supplierId], references: [id])
+  documents Document[]
+
+  @@map("survey_responses")
+}
+
+model Document {
+  id                   String   @id @default(uuid())
+  surveyResponseId     String   @map("survey_response_id")
+  originalFilename     String   @map("original_filename")
+  storagePath          String   @map("storage_path")
+  hashSha256           String   @map("hash_sha256")
+  timestamp            DateTime
+  blockchainAnchorTxId String?  @map("blockchain_anchor_tx_id")
+  verified             Boolean  @default(false)
+  fileSize             BigInt   @map("file_size")
+  mimeType             String   @map("mime_type")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  // Relations
+  surveyResponse SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+model Report {
+  id                     String   @id @default(uuid())
+  productId              String   @map("product_id")
+  generatedAt            DateTime @default(now()) @map("generated_at")
+  pdfUrl                 String   @map("pdf_url")
+  verificationUrl        String   @map("verification_url")
+  transparencyScore      Int      @map("transparency_score")
+  supplierCompletionRate Int      @map("supplier_completion_rate")
+  createdAt              DateTime @default(now()) @map("created_at")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+enum UserRole {
+  SME_ADMIN
+  SUPPLIER
+}
+
+enum SupplierStatus {
+  PENDING
+  RESPONDED
+  VERIFIED
+}
+
+enum SurveyResponseStatus {
+  PENDING
+  SUBMITTED
+}

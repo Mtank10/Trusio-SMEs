@@ -1,5 +1,5 @@
 import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 interface StatsCardProps {
   title: string;
@@ -9,7 +9,7 @@ interface StatsCardProps {
     value: number;
     label: string;
   };
-  color?: 'blue' | 'green' | 'yellow' | 'red';
+  color?: 'indigo' | 'emerald' | 'amber' | 'red' | 'purple';
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ 
@@ -17,24 +17,25 @@ const StatsCard: React.FC<StatsCardProps> = ({
   value, 
   icon: Icon, 
   trend, 
-  color = 'blue' 
+  color = 'indigo' 
 }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    yellow: 'bg-yellow-50 text-yellow-600',
+    indigo: 'bg-indigo-50 text-indigo-600',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    amber: 'bg-amber-50 text-amber-600',
     red: 'bg-red-50 text-red-600',
+    purple: 'bg-purple-50 text-purple-600',
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-semibold text-gray-900 mt-1">{value}</p>
+          <p className="text-sm font-medium text-slate-600">{title}</p>
+          <p className="text-2xl font-semibold text-slate-900 mt-1">{value}</p>
           {trend && (
-            <p className="text-xs text-gray-500 mt-1">
-              <span className={`${trend.value >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <p className="text-xs text-slate-500 mt-1">
+              <span className={`${trend.value >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                 {trend.value >= 0 ? '+' : ''}{trend.value}%
               </span>{' '}
               {trend.label}

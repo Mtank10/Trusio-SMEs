@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   companyName: string;
-  role: 'sme_admin' | 'supplier';
+  role: 'SME_ADMIN' | 'SUPPLIER';
   createdAt: Date;
 }
 
@@ -12,6 +12,8 @@ export interface Product {
   description: string;
   smeId: string;
   createdAt: Date;
+  suppliers?: Supplier[];
+  surveys?: Survey[];
 }
 
 export interface Supplier {
@@ -21,8 +23,10 @@ export interface Supplier {
   tier: number;
   parentSupplierId?: string;
   productId: string;
-  status: 'pending' | 'responded' | 'verified';
+  status: 'PENDING' | 'RESPONDED' | 'VERIFIED';
   responseDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Survey {
@@ -32,6 +36,7 @@ export interface Survey {
   questions: SurveyQuestion[];
   createdBy: string;
   createdAt: Date;
+  responses?: SurveyResponse[];
 }
 
 export interface SurveyQuestion {
@@ -49,9 +54,11 @@ export interface SurveyResponse {
   supplierEmail: string;
   answers: Record<string, any>;
   documents: Document[];
-  status: 'pending' | 'submitted';
+  status: 'PENDING' | 'SUBMITTED';
   token: string;
   submittedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Document {
@@ -65,6 +72,7 @@ export interface Document {
   verified: boolean;
   fileSize: number;
   mimeType: string;
+  createdAt: Date;
 }
 
 export interface Report {
@@ -75,13 +83,14 @@ export interface Report {
   verificationUrl: string;
   transparencyScore: number;
   supplierCompletionRate: number;
+  createdAt: Date;
 }
 
 export interface SupplyChainNode {
   id: string;
   name: string;
   tier: number;
-  status: 'pending' | 'responded' | 'verified';
+  status: 'PENDING' | 'RESPONDED' | 'VERIFIED';
   children?: SupplyChainNode[];
   x?: number;
   y?: number;

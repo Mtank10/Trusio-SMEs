@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { 
   Home, 
   Package, 
@@ -35,28 +35,28 @@ const Sidebar: React.FC = () => {
   return (
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64">
-        <div className="flex flex-col h-0 flex-1 bg-gray-50 border-r border-gray-200">
+        <div className="flex flex-col h-0 flex-1 bg-slate-50 border-r border-slate-200">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <nav className="mt-5 flex-1 px-2 space-y-1">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className={`${
                       item.current
-                        ? 'bg-blue-50 border-blue-500 text-blue-700'
-                        : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                        : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     } group flex items-center px-3 py-2 text-sm font-medium border-l-4 transition-colors`}
                   >
                     <Icon
                       className={`${
-                        item.current ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
+                        item.current ? 'text-indigo-500' : 'text-slate-400 group-hover:text-slate-500'
                       } mr-3 h-5 w-5`}
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 );
               })}
             </nav>

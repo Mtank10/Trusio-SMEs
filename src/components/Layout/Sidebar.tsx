@@ -8,7 +8,8 @@ import {
   BarChart3, 
   Settings,
   Map,
-  Shield
+  Shield,
+  CreditCard
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -29,6 +30,7 @@ const Sidebar: React.FC = () => {
     { name: 'Surveys', icon: FileText, href: '/surveys', current: location.pathname.startsWith('/surveys') },
     { name: 'Reports', icon: BarChart3, href: '/reports', current: location.pathname.startsWith('/reports') },
     { name: 'Verification', icon: Shield, href: '/verification', current: location.pathname.startsWith('/verification') },
+    { name: 'Billing', icon: CreditCard, href: '/billing', current: location.pathname.startsWith('/billing') },
     { name: 'Settings', icon: Settings, href: '/settings', current: location.pathname.startsWith('/settings') },
   ];
 

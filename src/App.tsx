@@ -16,6 +16,7 @@ import SupplyChain from './pages/SupplyChain';
 import Surveys from './pages/Surveys';
 import Reports from './pages/Reports';
 import Verification from './pages/Verification';
+import Billing from './pages/Billing';
 import SupplierPortal from './pages/SupplierPortal';
 
 const App: React.FC = () => {
@@ -63,6 +64,11 @@ const App: React.FC = () => {
             <Route path="/verification" element={
               <ProtectedRoute>
                 <Verification />
+              </ProtectedRoute>
+            } />
+            <Route path="/billing" element={
+              <ProtectedRoute>
+                <Billing />
               </ProtectedRoute>
             } />
           </Routes>

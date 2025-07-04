@@ -14,7 +14,7 @@ const SupplyChain: React.FC = () => {
       id: '1',
       name: 'Green Materials Co.',
       tier: 1,
-      status: 'verified',
+      status: 'VERIFIED',
       children: [
         {
           id: '2',

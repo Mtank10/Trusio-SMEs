@@ -32,6 +32,11 @@ export const api = {
       headers: { 'Authorization': `Bearer ${token}` },
     }),
 
+  getProduct: (id: string, token: string) =>
+    fetch(`${API_BASE_URL}/products/${id}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
   createProduct: (data: { name: string; description: string }, token: string) =>
     fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
@@ -121,6 +126,9 @@ export const api = {
       method: 'POST',
     }),
 
+  getDocumentMetadata: (documentId: string) =>
+    fetch(`${API_BASE_URL}/documents/${documentId}/metadata`),
+
   // Reports endpoints
   generateReport: (data: { productId: string }, token: string) =>
     fetch(`${API_BASE_URL}/reports/generate`, {
@@ -142,4 +150,74 @@ export const api = {
 
   verifyReport: (reportId: string) =>
     fetch(`${API_BASE_URL}/reports/${reportId}/verify`),
+
+  getReportMetadata: (reportId: string) =>
+    fetch(`${API_BASE_URL}/reports/${reportId}/metadata`),
+
+  // User/Settings endpoints
+  getUserProfile: (token: string) =>
+    fetch(`${API_BASE_URL}/users/profile`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
+  updateUserProfile: (data: any, token: string) =>
+    fetch(`${API_BASE_URL}/users/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  changePassword: (data: { currentPassword: string; newPassword: string }, token: string) =>
+    fetch(`${API_BASE_URL}/users/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  // Billing endpoints
+  getSubscription: (token: string) =>
+    fetch(`${API_BASE_URL}/billing/subscription`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
+  updateSubscription: (data: { tierId: string }, token: string) =>
+    fetch(`${API_BASE_URL}/billing/subscription`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  getUsage: (token: string) =>
+    fetch(`${API_BASE_URL}/billing/usage`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
+  getInvoices: (token: string) =>
+    fetch(`${API_BASE_URL}/billing/invoices`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
+  getBillingSettings: (token: string) =>
+    fetch(`${API_BASE_URL}/billing/settings`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    }),
+
+  updateBillingSettings: (data: any, token: string) =>
+    fetch(`${API_BASE_URL}/billing/settings`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
 };

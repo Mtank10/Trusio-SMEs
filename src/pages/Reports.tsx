@@ -1,88 +1,197 @@
-import React from 'react';
-import { useApp } from '../contexts/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { api } from '../config/api';
 import Layout from '../components/Layout/Layout';
 import ReportCard from '../components/Reports/ReportCard';
-import { Report } from '../types';
-import { BarChart3, Download } from 'lucide-react';
+import { Report, Product } from '../types';
+import { BarChart3, Download, Plus } from 'lucide-react';
 
 const Reports: React.FC = () => {
-  const { state } = useApp();
+  const { state: authState } = useAuth();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock reports data for demonstration
-  const mockReports: Report[] = [
-    {
-      id: '1',
-      productId: '1',
-      generatedAt: new Date(),
-      pdfUrl: '/reports/report-1.pdf',
-      verificationUrl: '/verify/report-1',
-      transparencyScore: 87,
-      supplierCompletionRate: 92,
-    },
-    {
-      id: '2',
-      productId: '1',
-      generatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      pdfUrl: '/reports/report-2.pdf',
-      verificationUrl: '/verify/report-2',
-      transparencyScore: 82,
-      supplierCompletionRate: 88,
-    },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, [authState.token]);
 
-  const handleDownloadReport = (reportId: string) => {
-    // In real app, would download the actual PDF
-    console.log('Downloading report:', reportId);
+  const fetchData = async () => {
+    if (!authState.token) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const [reportsRes, productsRes] = await Promise.all([
+        api.getReports(authState.token),
+        api.getProducts(authState.token),
+      ]);
+
+      if (!reportsRes.ok || !productsRes.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const reportsData = await reportsRes.json();
+      const productsData = await productsRes.json();
+
+      setReports(reportsData);
+      setProducts(productsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Failed to load reports');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyReport = (reportId: string) => {
-    // In real app, would show verification details
-    console.log('Verifying report:', reportId);
+  const handleGenerateReport = async () => {
+    if (!authState.token || products.length === 0) {
+      alert('Please add a product first before generating reports');
+      return;
+    }
+
+    try {
+      setGenerating(true);
+      
+      // For now, generate report for the first product
+      const response = await api.generateReport({
+        productId: products[0].id,
+      }, authState.token);
+
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const result = await response.json();
+      console.log('Report generated:', result);
+      
+      await fetchData(); // Refresh the list
+      alert('Report generated successfully!');
+    } catch (error) {
+      console.error('Error generating report:', error);
+      alert('Failed to generate report');
+    } finally {
+      setGenerating(false);
+    }
   };
 
-  const handleGenerateReport = () => {
-    // In real app, would generate a new report
-    console.log('Generating new report');
+  const handleDownloadReport = async (reportId: string) => {
+    try {
+      const response = await api.downloadReport(reportId);
+      if (!response.ok) throw new Error('Failed to download report');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `supply-chain-report-${reportId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      alert('Failed to download report');
+    }
   };
+
+  const handleVerifyReport = async (reportId: string) => {
+    try {
+      const response = await api.verifyReport(reportId);
+      if (!response.ok) throw new Error('Failed to verify report');
+
+      const verification = await response.json();
+      console.log('Report verification:', verification);
+      
+      // Show verification details in a modal or new page
+      alert(`Report verified! Transparency Score: ${verification.transparencyScore}%`);
+    } catch (error) {
+      console.error('Error verifying report:', error);
+      alert('Failed to verify report');
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-navy-600">Loading reports...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="text-red-600 mb-2">{error}</div>
+            <button
+              onClick={fetchData}
+              className="px-4 py-2 bg-trust-600 text-white rounded-lg hover:bg-trust-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-bold text-navy-800">Reports</h1>
+            <p className="text-navy-600">
               Generate and download supply chain transparency reports
             </p>
           </div>
           <button
             onClick={handleGenerateReport}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            disabled={generating || products.length === 0}
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-trust"
           >
-            <Download className="w-4 h-4" />
-            <span>Generate Report</span>
+            {generating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Generating...</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4" />
+                <span>Generate Report</span>
+              </>
+            )}
           </button>
         </div>
 
-        {mockReports.length === 0 ? (
+        {reports.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 bg-navy-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BarChart3 className="w-8 h-8 text-navy-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No reports yet</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="text-lg font-medium text-navy-800 mb-2">No reports yet</h3>
+            <p className="text-navy-600 mb-4">
               Generate your first transparency report to share with stakeholders
             </p>
             <button
               onClick={handleGenerateReport}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              disabled={products.length === 0}
+              className="px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              Generate Your First Report
+              {products.length === 0 ? 'Add a Product First' : 'Generate Your First Report'}
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockReports.map((report) => (
+            {reports.map((report) => (
               <ReportCard
                 key={report.id}
                 report={report}

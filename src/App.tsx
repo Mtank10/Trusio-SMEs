@@ -17,6 +17,7 @@ import Surveys from './pages/Surveys';
 import Reports from './pages/Reports';
 import Verification from './pages/Verification';
 import Billing from './pages/Billing';
+import Settings from './pages/Settings';
 import SupplierPortal from './pages/SupplierPortal';
 
 const App: React.FC = () => {
@@ -69,6 +70,11 @@ const App: React.FC = () => {
             <Route path="/billing" element={
               <ProtectedRoute>
                 <Billing />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } />
           </Routes>

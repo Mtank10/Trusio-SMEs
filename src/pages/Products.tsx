@@ -83,7 +83,7 @@ const Products: React.FC = () => {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-slate-600">Loading products...</div>
+          <div className="text-navy-600">Loading products...</div>
         </div>
       </Layout>
     );
@@ -94,14 +94,14 @@ const Products: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Products</h1>
-            <p className="text-slate-600">
+            <h1 className="text-2xl font-bold text-navy-800">Products</h1>
+            <p className="text-navy-600">
               Manage your products and their supply chain requirements
             </p>
           </div>
           <button
             onClick={handleAddProduct}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm"
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 transition-all shadow-trust"
           >
             <Plus className="w-4 h-4" />
             <span>Add Product</span>
@@ -110,16 +110,16 @@ const Products: React.FC = () => {
 
         {products.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Package className="w-8 h-8 text-slate-400" />
+            <div className="w-16 h-16 bg-navy-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="w-8 h-8 text-navy-400" />
             </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-2">No products yet</h3>
-            <p className="text-slate-600 mb-4">
+            <h3 className="text-lg font-medium text-navy-800 mb-2">No products yet</h3>
+            <p className="text-navy-600 mb-4">
               Start by adding your first product to track its supply chain
             </p>
             <button
               onClick={handleAddProduct}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all"
+              className="px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 transition-all"
             >
               Add Your First Product
             </button>

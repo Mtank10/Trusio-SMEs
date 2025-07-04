@@ -59,20 +59,20 @@ const RecentActivity: React.FC = () => {
   const getStatusColor = (status: ActivityItem['status']) => {
     switch (status) {
       case 'success':
-        return 'text-emerald-600';
+        return 'text-sustainability-600';
       case 'warning':
-        return 'text-amber-600';
+        return 'text-accent-renewable';
       case 'info':
-        return 'text-indigo-600';
+        return 'text-trust-600';
       default:
-        return 'text-slate-600';
+        return 'text-navy-600';
     }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-      <div className="p-6 border-b border-slate-200">
-        <h3 className="text-lg font-medium text-slate-900">Recent Activity</h3>
+    <div className="bg-white rounded-xl shadow-sm border border-navy-200">
+      <div className="p-6 border-b border-navy-200">
+        <h3 className="text-lg font-medium text-navy-800">Recent Activity</h3>
       </div>
       <div className="p-6">
         <div className="space-y-6">
@@ -84,8 +84,8 @@ const RecentActivity: React.FC = () => {
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-slate-900">{activity.message}</p>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-sm text-navy-800">{activity.message}</p>
+                  <p className="text-xs text-navy-500 mt-1">
                     {activity.timestamp.toLocaleString()}
                   </p>
                 </div>

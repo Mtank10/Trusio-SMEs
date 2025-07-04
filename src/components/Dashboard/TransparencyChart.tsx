@@ -12,10 +12,10 @@ const TransparencyChart: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-      <div className="p-6 border-b border-slate-200">
-        <h3 className="text-lg font-medium text-slate-900">Transparency Score Trend</h3>
-        <p className="text-sm text-slate-600 mt-1">Monthly supply chain transparency improvements</p>
+    <div className="bg-white rounded-xl shadow-sm border border-navy-200">
+      <div className="p-6 border-b border-navy-200">
+        <h3 className="text-lg font-medium text-navy-800">Transparency Score Trend</h3>
+        <p className="text-sm text-navy-600 mt-1">Monthly supply chain transparency improvements</p>
       </div>
       <div className="p-6">
         <ResponsiveContainer width="100%" height={300}>
@@ -34,8 +34,8 @@ const TransparencyChart: React.FC = () => {
             <Bar dataKey="score" fill="url(#colorGradient)" radius={[4, 4, 0, 0]} />
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.8}/>
               </linearGradient>
             </defs>
           </BarChart>

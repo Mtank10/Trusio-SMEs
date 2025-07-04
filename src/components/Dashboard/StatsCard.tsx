@@ -9,7 +9,7 @@ interface StatsCardProps {
     value: number;
     label: string;
   };
-  color?: 'indigo' | 'emerald' | 'amber' | 'red' | 'purple';
+  color?: 'trust' | 'sustainability' | 'energy' | 'navy' | 'accent';
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ 
@@ -17,25 +17,25 @@ const StatsCard: React.FC<StatsCardProps> = ({
   value, 
   icon: Icon, 
   trend, 
-  color = 'indigo' 
+  color = 'trust' 
 }) => {
   const colorClasses = {
-    indigo: 'bg-indigo-50 text-indigo-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    red: 'bg-red-50 text-red-600',
-    purple: 'bg-purple-50 text-purple-600',
+    trust: 'bg-trust-50 text-trust-600',
+    sustainability: 'bg-sustainability-50 text-sustainability-600',
+    energy: 'bg-energy-50 text-energy-600',
+    navy: 'bg-navy-50 text-navy-600',
+    accent: 'bg-accent-coffee/10 text-accent-coffee',
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-sm border border-navy-200 p-6 hover:shadow-trust transition-shadow">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-600">{title}</p>
-          <p className="text-2xl font-semibold text-slate-900 mt-1">{value}</p>
+          <p className="text-sm font-medium text-navy-600">{title}</p>
+          <p className="text-2xl font-semibold text-navy-800 mt-1">{value}</p>
           {trend && (
-            <p className="text-xs text-slate-500 mt-1">
-              <span className={`${trend.value >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            <p className="text-xs text-navy-500 mt-1">
+              <span className={`${trend.value >= 0 ? 'text-sustainability-600' : 'text-red-600'}`}>
                 {trend.value >= 0 ? '+' : ''}{trend.value}%
               </span>{' '}
               {trend.label}

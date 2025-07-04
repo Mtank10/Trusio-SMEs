@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64">
-        <div className="flex flex-col h-0 flex-1 bg-slate-50 border-r border-slate-200">
+        <div className="flex flex-col h-0 flex-1 bg-navy-50 border-r border-navy-200">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <nav className="mt-5 flex-1 px-2 space-y-1">
               {navigation.map((item) => {
@@ -46,13 +46,13 @@ const Sidebar: React.FC = () => {
                     to={item.href}
                     className={`${
                       item.current
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                        : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-trust-50 border-trust-500 text-trust-700'
+                        : 'border-transparent text-navy-600 hover:bg-navy-100 hover:text-navy-800'
                     } group flex items-center px-3 py-2 text-sm font-medium border-l-4 transition-colors`}
                   >
                     <Icon
                       className={`${
-                        item.current ? 'text-indigo-500' : 'text-slate-400 group-hover:text-slate-500'
+                        item.current ? 'text-trust-500' : 'text-navy-400 group-hover:text-navy-500'
                       } mr-3 h-5 w-5`}
                     />
                     {item.name}

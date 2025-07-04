@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-slate-600">Loading dashboard...</div>
+          <div className="text-navy-600">Loading dashboard...</div>
         </div>
       </Layout>
     );
@@ -67,8 +67,8 @@ const Dashboard: React.FC = () => {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-600">
+          <h1 className="text-2xl font-bold text-navy-800">Dashboard</h1>
+          <p className="text-navy-600">
             Overview of your supply chain transparency activities
           </p>
         </div>
@@ -79,28 +79,28 @@ const Dashboard: React.FC = () => {
             value={stats.products}
             icon={Package}
             trend={{ value: 12, label: 'from last month' }}
-            color="indigo"
+            color="trust"
           />
           <StatsCard
             title="Active Suppliers"
             value={stats.suppliers}
             icon={Users}
             trend={{ value: 8, label: 'from last month' }}
-            color="emerald"
+            color="sustainability"
           />
           <StatsCard
             title="Survey Responses"
             value={stats.responses}
             icon={FileText}
             trend={{ value: 23, label: 'from last week' }}
-            color="amber"
+            color="energy"
           />
           <StatsCard
             title="Transparency Score"
             value={`${stats.transparencyScore}%`}
             icon={BarChart3}
             trend={{ value: 5, label: 'from last month' }}
-            color="emerald"
+            color="sustainability"
           />
         </div>
 

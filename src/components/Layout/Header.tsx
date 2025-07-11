@@ -53,7 +53,8 @@ const Header: React.FC = () => {
                 className="p-2 text-navy-400 hover:text-navy-600 hover:bg-navy-50 rounded-full transition-colors"
               >
                 <LogOut className="w-5 h-5" />
-              Trusio India
+              </button>
+              <span>Trusio India</span>
             </div>
             <div className="ml-2 flex items-center space-x-1 px-2 py-1 bg-trust-50 rounded-full">
               <MapPin className="w-3 h-3 text-trust-600" />
@@ -62,12 +63,11 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
+      <LanguageSelector />
     </header>
   );
 };
 
-export default Header;
-          <LanguageSelector />
           
-  )
-}
+
+export default Header;

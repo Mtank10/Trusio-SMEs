@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,72 +8,89 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  passwordHash String  @map("password_hash")
-  companyName String   @map("company_name")
-  role        UserRole @default(SME_ADMIN)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  passwordHash       String              @map("password_hash")
+  companyName        String              @map("company_name")
+  role               UserRole            @default(SME_ADMIN)
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+
+  // India-specific fields
+  gstin              String?             @db.VarChar(15)
+  udyam_number       String?             @db.VarChar(20)
+  business_state     String?             @db.VarChar(50)
+  preferred_language String              @default("hi") @db.VarChar(5)
+  industry_type      String?             @db.VarChar(20)
 
   // Relations
-  products Product[]
-  surveys  Survey[]
+  products           Product[]
+  surveys            Survey[]
+  userIndiaProfile   UserIndiaProfile?
+  complianceRecords  ComplianceRecord[]
 
   @@map("users")
 }
 
 model Product {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String
-  smeId       String   @map("sme_id")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  smeId       String     @map("sme_id")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
 
-  // Relations
-  sme       User       @relation(fields: [smeId], references: [id], onDelete: Cascade)
-  suppliers Supplier[]
-  surveys   Survey[]
-  reports   Report[]
+  sme         User       @relation(fields: [smeId], references: [id], onDelete: Cascade)
+  suppliers   Supplier[]
+  surveys     Survey[]
+  reports     Report[]
 
   @@map("products")
 }
 
 model Supplier {
-  id               String            @id @default(uuid())
-  name             String
-  email            String
-  tier             Int
-  parentSupplierId String?           @map("parent_supplier_id")
-  productId        String            @map("product_id")
-  status           SupplierStatus    @default(PENDING)
-  responseDate     DateTime?         @map("response_date")
-  createdAt        DateTime          @default(now()) @map("created_at")
-  updatedAt        DateTime          @updatedAt @map("updated_at")
+  id                 String              @id @default(uuid())
+  name               String
+  email              String
+  tier               Int
+  parentSupplierId   String?             @map("parent_supplier_id")
+  productId          String              @map("product_id")
+  status             SupplierStatus      @default(PENDING)
+  responseDate       DateTime?           @map("response_date")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
 
-  // Relations
-  product         Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
-  parentSupplier  Supplier?         @relation("SupplierHierarchy", fields: [parentSupplierId], references: [id])
-  childSuppliers  Supplier[]        @relation("SupplierHierarchy")
-  surveyResponses SurveyResponse[]
+  // India-specific fields
+  gstin              String?             @db.VarChar(15)
+  udyam_number       String?             @db.VarChar(20)
+  business_state     String?             @db.VarChar(50)
+  compliance_score   Int                 @default(0)
+  whatsapp_number    String?             @db.VarChar(15)
+
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  parentSupplier     Supplier?           @relation("SupplierHierarchy", fields: [parentSupplierId], references: [id])
+  childSuppliers     Supplier[]          @relation("SupplierHierarchy")
+  surveyResponses    SurveyResponse[]
+  complianceRecords  ComplianceRecord[]
 
   @@map("suppliers")
+  @@index([gstin])
+  @@index([udyam_number])
+  @@index([business_state])
 }
 
 model Survey {
   id           String     @id @default(uuid())
   productId    String     @map("product_id")
   supplierTier Int        @map("supplier_tier")
-  questions    Json       // JSONB field for dynamic questions
+  questions    Json
   createdBy    String     @map("created_by")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
 
-  // Relations
-  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
-  creator   User             @relation(fields: [createdBy], references: [id])
-  responses SurveyResponse[]
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  creator      User       @relation(fields: [createdBy], references: [id])
+  responses    SurveyResponse[]
 
   @@map("surveys")
 }
@@ -86,17 +100,16 @@ model SurveyResponse {
   surveyId      String               @map("survey_id")
   supplierEmail String               @map("supplier_email")
   supplierId    String?              @map("supplier_id")
-  answers       Json                 // JSONB field for dynamic answers
+  answers       Json
   status        SurveyResponseStatus @default(PENDING)
-  token         String               @unique // Unique token for invite link
+  token         String               @unique
   submittedAt   DateTime?            @map("submitted_at")
   createdAt     DateTime             @default(now()) @map("created_at")
   updatedAt     DateTime             @updatedAt @map("updated_at")
 
-  // Relations
-  survey    Survey     @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  supplier  Supplier?  @relation(fields: [supplierId], references: [id])
-  documents Document[]
+  survey        Survey               @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  supplier      Supplier?            @relation(fields: [supplierId], references: [id])
+  documents     Document[]
 
   @@map("survey_responses")
 }
@@ -114,8 +127,13 @@ model Document {
   mimeType             String   @map("mime_type")
   createdAt            DateTime @default(now()) @map("created_at")
 
-  // Relations
-  surveyResponse SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+  // India-specific additions
+  document_category    String?  @db.VarChar(20)
+  compliance_type      String?  @db.VarChar(20)
+  certificate_number   String?  @db.VarChar(100)
+  expiry_date          DateTime?
+
+  surveyResponse       SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
 
   @@map("documents")
 }
@@ -130,12 +148,109 @@ model Report {
   supplierCompletionRate Int      @map("supplier_completion_rate")
   createdAt              DateTime @default(now()) @map("created_at")
 
-  // Relations
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product                Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("reports")
 }
 
+// ----------------------------
+// ✅ India-Specific Models
+// ----------------------------
+
+model UserIndiaProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  gstin               String?  @db.VarChar(15)
+  gstin_verified      Boolean  @default(false)
+  gstin_verified_at   DateTime? @db.Timestamp(3)
+  udyam_number        String?  @db.VarChar(20)
+  udyam_verified      Boolean  @default(false)
+  udyam_verified_at   DateTime? @db.Timestamp(3)
+  business_state      String?  @db.VarChar(50)
+  business_district   String?  @db.VarChar(100)
+  business_pincode    String?  @db.VarChar(10)
+  industry_type       String?  @db.VarChar(20)
+  enterprise_category String?  @db.VarChar(10)
+  preferred_language  String   @default("hi") @db.VarChar(5)
+  whatsapp_number     String?  @db.VarChar(15)
+  created_at          DateTime @default(now()) @db.Timestamp(3)
+  updated_at          DateTime @default(now()) @db.Timestamp(3)
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_india_profile")
+  @@index([userId])
+  @@index([gstin])
+  @@index([udyam_number])
+}
+
+model GSTValidation {
+  id                 String   @id @default(uuid())
+  gstin              String   @db.VarChar(15)
+  legal_name         String?
+  trade_name         String?
+  registration_date  DateTime?
+  status             String?  @db.VarChar(20)
+  state_code         String?  @db.VarChar(2)
+  state_name         String?  @db.VarChar(50)
+  validation_date    DateTime @default(now()) @db.Timestamp(3)
+  is_valid           Boolean  @default(false)
+  validation_response Json?
+  created_at         DateTime @default(now()) @db.Timestamp(3)
+
+  @@map("gst_validations")
+  @@index([gstin])
+  @@index([validation_date])
+}
+
+model MSMERegistration {
+  id                    String   @id @default(uuid())
+  udyam_number          String   @unique @db.VarChar(20)
+  enterprise_name       String
+  major_activity        String?
+  enterprise_type       String?  @db.VarChar(10)
+  investment_amount     BigInt?
+  turnover_amount       BigInt?
+  employment_male       Int      @default(0)
+  employment_female     Int      @default(0)
+  date_of_incorporation DateTime?
+  verification_date     DateTime @default(now()) @db.Timestamp(3)
+  is_verified           Boolean  @default(false)
+  verification_response Json?
+  created_at            DateTime @default(now()) @db.Timestamp(3)
+
+  @@map("msme_registrations")
+  @@index([udyam_number])
+  @@index([enterprise_type])
+}
+
+model ComplianceRecord {
+  id                 String   @id @default(uuid())
+  userId             String
+  supplierId         String?
+  compliance_type    String   @db.VarChar(20)
+  document_type      String?  @db.VarChar(50)
+  certificate_number String?  @db.VarChar(100)
+  issue_date         DateTime?
+  expiry_date        DateTime?
+  issuing_authority  String?
+  status             String   @default("PENDING") @db.VarChar(20)
+  verification_date  DateTime?
+  document_url       String?
+  created_at         DateTime @default(now()) @db.Timestamp(3)
+  updated_at         DateTime @default(now()) @db.Timestamp(3)
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  supplier           Supplier? @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@map("compliance_records")
+  @@index([userId])
+  @@index([supplierId])
+  @@index([compliance_type])
+  @@index([status])
+}
+
+// Enums
 enum UserRole {
   SME_ADMIN
   SUPPLIER

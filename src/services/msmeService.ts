@@ -1,4 +1,5 @@
 import { INDIA_CONFIG } from '../config/india';
+import { api } from '../config/api';
 
 export interface UdyamDetails {
   udyamNumber: string;
@@ -34,51 +35,13 @@ export interface MSMEBenefit {
 export class MSMEService {
   static async verifyUdyamRegistration(udyamNumber: string): Promise<UdyamDetails | null> {
     try {
-      // In production, this would call the actual Udyam API
-      if (process.env.NODE_ENV === 'development') {
-        return this.mockUdyamVerification(udyamNumber);
-      }
-
-      const response = await fetch(`${INDIA_CONFIG.MSME.UDYAM_API_URL}/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ udyamNumber }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Udyam verification failed');
-      }
-
+      const response = await api.verifyUdyam(udyamNumber);
       const data = await response.json();
-      return data.isValid ? data : null;
+      return data.isValid ? data.details : null;
     } catch (error) {
       console.error('Udyam verification error:', error);
       return null;
     }
-  }
-
-  private static mockUdyamVerification(udyamNumber: string): UdyamDetails {
-    return {
-      udyamNumber,
-      enterpriseName: 'Sample MSME Enterprise',
-      majorActivity: 'Manufacturing',
-      socialCategory: 'General',
-      enterpriseType: 'Small',
-      dateOfIncorporation: '2020-01-15',
-      dateOfCommencementOfProduction: '2020-03-01',
-      bankDetails: {
-        accountNumber: '1234567890',
-        ifscCode: 'SBIN0001234',
-        bankName: 'State Bank of India',
-      },
-      investment: 5000000, // ₹50 Lakh
-      turnover: 25000000, // ₹2.5 Crore
-      employmentMale: 15,
-      employmentFemale: 10,
-      isValid: true,
-    };
   }
 
   static categorizeEnterprise(investment: number, turnover: number): 'Micro' | 'Small' | 'Medium' | 'Large' {
@@ -96,49 +59,13 @@ export class MSMEService {
   }
 
   static async getAvailableBenefits(enterpriseType: string, state: string, industry: string): Promise<MSMEBenefit[]> {
-    // Mock benefits data - in production, this would come from government APIs
-    const benefits: MSMEBenefit[] = [
-      {
-        id: '1',
-        name: 'Credit Guarantee Fund Scheme',
-        description: 'Collateral-free loans up to ₹2 crore',
-        eligibility: ['Micro', 'Small'],
-        amount: 20000000,
-        type: 'Loan',
-        status: 'Available',
-      },
-      {
-        id: '2',
-        name: 'Technology Upgradation Fund Scheme',
-        description: 'Subsidized loans for technology upgradation',
-        eligibility: ['Small', 'Medium'],
-        amount: 10000000,
-        type: 'Subsidy',
-        status: 'Available',
-      },
-      {
-        id: '3',
-        name: 'Government e-Marketplace (GeM) Preference',
-        description: 'Procurement preference in government purchases',
-        eligibility: ['Micro', 'Small'],
-        amount: 0,
-        type: 'Procurement Preference',
-        status: 'Available',
-      },
-      {
-        id: '4',
-        name: 'Delayed Payment Compensation',
-        description: 'Compensation for delayed payments from buyers',
-        eligibility: ['Micro', 'Small', 'Medium'],
-        amount: 0,
-        type: 'Tax Benefit',
-        status: 'Available',
-      },
-    ];
-
-    return benefits.filter(benefit => 
-      benefit.eligibility.includes(enterpriseType)
-    );
+    try {
+      const response = await api.verifyUdyam('dummy'); // This would be a separate benefits API
+      const data = await response.json();
+      return data.benefits || [];
+    } catch (error) {
+      return [];
+    }
   }
 
   static async trackSubsidyStatus(applicationId: string): Promise<any> {

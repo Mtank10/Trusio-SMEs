@@ -50,12 +50,15 @@ const Register: React.FC = () => {
               <Building2 className="w-6 h-6 text-white" />
             </div>
             <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-trust-600 to-energy-600 bg-clip-text text-transparent">
-              Trusio
+              Trusio India
             </span>
           </div>
-          <h2 className="text-3xl font-bold text-navy-800">Create your account</h2>
+          <h2 className="text-3xl font-bold text-navy-800">अपना खाता बनाएं | Create Account</h2>
           <p className="mt-2 text-navy-600">
-            Start building transparency in your supply chain
+            अपनी आपूर्ति श्रृंखला में पारदर्शिता का निर्माण शुरू करें
+          </p>
+          <p className="text-sm text-navy-500">
+            Start building transparency in your Indian supply chain
           </p>
         </div>
 

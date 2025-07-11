@@ -9,7 +9,9 @@ import {
   Settings,
   Map,
   Shield,
-  CreditCard
+  CreditCard,
+  Building2,
+  Award
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -30,6 +32,8 @@ const Sidebar: React.FC = () => {
     { name: 'Surveys', icon: FileText, href: '/surveys', current: location.pathname.startsWith('/surveys') },
     { name: 'Reports', icon: BarChart3, href: '/reports', current: location.pathname.startsWith('/reports') },
     { name: 'Verification', icon: Shield, href: '/verification', current: location.pathname.startsWith('/verification') },
+    { name: 'GST Compliance', icon: Building2, href: '/gst-compliance', current: location.pathname.startsWith('/gst-compliance') },
+    { name: 'MSME Benefits', icon: Award, href: '/msme-benefits', current: location.pathname.startsWith('/msme-benefits') },
     { name: 'Billing', icon: CreditCard, href: '/billing', current: location.pathname.startsWith('/billing') },
     { name: 'Settings', icon: Settings, href: '/settings', current: location.pathname.startsWith('/settings') },
   ];

@@ -5,18 +5,21 @@ import Layout from '../components/Layout/Layout';
 import StatsCard from '../components/Dashboard/StatsCard';
 import RecentActivity from '../components/Dashboard/RecentActivity';
 import TransparencyChart from '../components/Dashboard/TransparencyChart';
-import { Package, Users, FileText, BarChart3 } from 'lucide-react';
+import { Package, Users, FileText, BarChart3, Building2, Award } from 'lucide-react';
 
 interface DashboardStats {
   products: number;
   suppliers: number;
   responses: number;
   transparencyScore: number;
+  gstCompliance: number;
+  msmeRegistered: boolean;
   trends: {
     products: number;
     suppliers: number;
     responses: number;
     transparencyScore: number;
+    gstCompliance: number;
   };
 }
 
@@ -27,11 +30,14 @@ const Dashboard: React.FC = () => {
     suppliers: 0,
     responses: 0,
     transparencyScore: 0,
+    gstCompliance: 0,
+    msmeRegistered: false,
     trends: {
       products: 0,
       suppliers: 0,
       responses: 0,
       transparencyScore: 0,
+      gstCompliance: 0,
     },
   });
   const [loading, setLoading] = useState(true);
@@ -80,11 +86,14 @@ const Dashboard: React.FC = () => {
         suppliers: totalSuppliers,
         responses: totalResponses,
         transparencyScore,
+        gstCompliance: 85, // Mock GST compliance score
+        msmeRegistered: true, // Mock MSME status
         trends: {
           products: 12, // These would come from historical data
           suppliers: 8,
           responses: 23,
           transparencyScore: 5,
+          gstCompliance: 12,
         },
       });
     } catch (error) {
@@ -127,13 +136,16 @@ const Dashboard: React.FC = () => {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-navy-800">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-navy-800">डैशबोर्ड | Dashboard</h1>
           <p className="text-navy-600">
+            आपकी आपूर्ति श्रृंखला पारदर्शिता गतिविधियों का अवलोकन
+          </p>
+          <p className="text-sm text-navy-500">
             Overview of your supply chain transparency activities
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
           <StatsCard
             title="Total Products"
             value={stats.products}
@@ -161,6 +173,19 @@ const Dashboard: React.FC = () => {
             icon={BarChart3}
             trend={{ value: stats.trends.transparencyScore, label: 'from last month' }}
             color="sustainability"
+          />
+          <StatsCard
+            title="GST Compliance"
+            value={`${stats.gstCompliance}%`}
+            icon={Building2}
+            trend={{ value: stats.trends.gstCompliance, label: 'from last month' }}
+            color="trust"
+          />
+          <StatsCard
+            title="MSME Status"
+            value={stats.msmeRegistered ? 'Verified' : 'Pending'}
+            icon={Award}
+            color="energy"
           />
         </div>
 

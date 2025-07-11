@@ -220,4 +220,64 @@ export const api = {
       },
       body: JSON.stringify(data),
     }),
+
+  // India-specific endpoints
+  validateGSTIN: (gstin: string) =>
+    fetch(`${API_BASE_URL}/india/gst/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gstin }),
+    }),
+
+  verifyUdyam: (udyamNumber: string) =>
+    fetch(`${API_BASE_URL}/india/msme/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ udyamNumber }),
+    }),
+
+  getIndustryPresets: () =>
+    fetch(`${API_BASE_URL}/india/industry-presets`),
+
+  configureIndustry: (data: { industry: string; state: string; language: string }, token: string) =>
+    fetch(`${API_BASE_URL}/india/configure-industry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  getIndiaPricing: () =>
+    fetch(`${API_BASE_URL}/india/pricing`),
+
+  getPilotStates: () =>
+    fetch(`${API_BASE_URL}/india/pilot-states`),
+
+  getSupportedLanguages: () =>
+    fetch(`${API_BASE_URL}/india/languages`),
+
+  generateGSTReport: (data: { supplierId: string; period: string }, token: string) =>
+    fetch(`${API_BASE_URL}/india/gst/report`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  validateInvoiceGSTIN: (data: { invoiceGSTIN: string; supplierGSTIN: string }, token: string) =>
+    fetch(`${API_BASE_URL}/india/gst/validate-invoice`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }),
+
+  getIndiaDocumentTypes: () =>
+    fetch(`${API_BASE_URL}/india/document-types`),
 };

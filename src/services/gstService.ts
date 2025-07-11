@@ -1,4 +1,5 @@
 import { INDIA_CONFIG } from '../config/india';
+import { api } from '../config/api';
 
 export interface GSTINDetails {
   gstin: string;
@@ -26,7 +27,6 @@ export interface GSTValidationResult {
 }
 
 export class GSTService {
-  private static API_KEY = process.env.VITE_GST_API_KEY;
 
   static validateGSTINFormat(gstin: string): boolean {
     return INDIA_CONFIG.GST.GSTIN_REGEX.test(gstin);
@@ -48,49 +48,9 @@ export class GSTService {
         };
       }
 
-      // In production, this would call the actual GST API
-      // For demo purposes, we'll simulate the API response
-      if (process.env.NODE_ENV === 'development') {
-        return this.mockGSTINValidation(gstin);
-      }
-
-      const response = await fetch(`${INDIA_CONFIG.GST.API_BASE_URL}/taxpayerapi/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': this.API_KEY || '',
-        },
-        body: JSON.stringify({ gstin }),
-      });
-
-      if (!response.ok) {
-        throw new Error('GST API request failed');
-      }
-
-      const data = await response.json();
-      
-      return {
-        isValid: data.flag === 'E',
-        details: data.flag === 'E' ? {
-          gstin: data.gstin,
-          legalName: data.tradeNam,
-          tradeName: data.lgnm,
-          registrationDate: data.rgdt,
-          constitutionOfBusiness: data.ctb,
-          taxpayerType: data.dty,
-          status: data.sts,
-          stateCode: data.gstin.substring(0, 2),
-          stateName: this.getStateFromGSTIN(data.gstin) || '',
-          addresses: {
-            principalPlace: {
-              address: data.pradr?.addr?.bno + ', ' + data.pradr?.addr?.st,
-              pincode: data.pradr?.addr?.pncd,
-              state: data.pradr?.addr?.stcd,
-            },
-          },
-        } : undefined,
-        error: data.flag !== 'E' ? 'GSTIN not found or inactive' : undefined,
-      };
+      // Call backend API for validation
+      const response = await api.validateGSTIN(gstin);
+      return await response.json();
     } catch (error) {
       return {
         isValid: false,
@@ -99,60 +59,22 @@ export class GSTService {
     }
   }
 
-  private static mockGSTINValidation(gstin: string): GSTValidationResult {
-    // Mock validation for development
-    const stateCode = gstin.substring(0, 2);
-    const stateName = INDIA_CONFIG.GST.STATES[stateCode];
-
-    if (!stateName) {
-      return {
-        isValid: false,
-        error: 'Invalid state code in GSTIN',
-      };
-    }
-
-    return {
-      isValid: true,
-      details: {
-        gstin,
-        legalName: 'Sample Company Private Limited',
-        tradeName: 'Sample Company',
-        registrationDate: '2020-01-01',
-        constitutionOfBusiness: 'Private Limited Company',
-        taxpayerType: 'Regular',
-        status: 'Active',
-        stateCode,
-        stateName,
-        addresses: {
-          principalPlace: {
-            address: '123, Sample Street, Sample Area',
-            pincode: '560001',
-            state: stateName,
-          },
-        },
-      },
-    };
-  }
-
-  static async generateGSTReport(supplierId: string, period: string): Promise<any> {
-    // Generate GST compliance report for supplier
+  static async generateGSTReport(supplierId: string, period: string, token: string): Promise<any> {
     try {
-      // This would integrate with GST APIs to fetch actual data
-      return {
-        supplierId,
-        period,
-        gstr1Filed: true,
-        gstr3bFiled: true,
-        outstandingDemand: 0,
-        complianceScore: 95,
-        lastFilingDate: new Date().toISOString(),
-      };
+      const response = await api.generateGSTReport({ supplierId, period }, token);
+      return await response.json();
     } catch (error) {
       throw new Error('Failed to generate GST report');
     }
   }
 
-  static validateInvoiceGSTIN(invoiceGSTIN: string, supplierGSTIN: string): boolean {
-    return invoiceGSTIN === supplierGSTIN;
+  static async validateInvoiceGSTIN(invoiceGSTIN: string, supplierGSTIN: string, token: string): Promise<boolean> {
+    try {
+      const response = await api.validateInvoiceGSTIN({ invoiceGSTIN, supplierGSTIN }, token);
+      const result = await response.json();
+      return result.isValid;
+    } catch (error) {
+      return false;
+    }
   }
 }

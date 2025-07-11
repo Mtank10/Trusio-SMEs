@@ -12,6 +12,7 @@ import productRoutes from './routes/products';
 import surveyRoutes from './routes/surveys';
 import documentRoutes from './routes/documents';
 import reportRoutes from './routes/reports';
+import indiaRoutes from './routes/india';
 
 // Load environment variables
 dotenv.config();
@@ -59,6 +60,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/surveys', surveyRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/india', indiaRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff, Building2, Shield, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Building2, Shield, Loader2, MapPin } from 'lucide-react';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -39,13 +39,30 @@ const Login: React.FC = () => {
               <Building2 className="w-6 h-6 text-white" />
             </div>
             <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-trust-600 to-energy-600 bg-clip-text text-transparent">
-              Trusio
+              Trusio India
             </span>
           </div>
-          <h2 className="text-3xl font-bold text-navy-800">Welcome back</h2>
+          <h2 className="text-3xl font-bold text-navy-800">स्वागत है | Welcome back</h2>
           <p className="mt-2 text-navy-600">
-            Sign in to your supply chain transparency platform
+            भारतीय आपूर्ति श्रृंखला पारदर्शिता प्लेटफॉर्म में साइन इन करें
           </p>
+          <p className="text-sm text-navy-500">
+            Sign in to your Indian supply chain transparency platform
+          </p>
+        </div>
+
+        {/* India-specific features highlight */}
+        <div className="bg-gradient-to-r from-trust-50 to-energy-50 rounded-xl border border-trust-200 p-4 mb-6">
+          <div className="flex items-center space-x-2 mb-2">
+            <MapPin className="w-4 h-4 text-trust-600" />
+            <span className="text-sm font-medium text-trust-800">Made for India</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs text-trust-700">
+            <div>✓ GST Compliance</div>
+            <div>✓ MSME Benefits</div>
+            <div>✓ Regional Languages</div>
+            <div>✓ UPI Payments</div>
+          </div>
         </div>
 
         {/* Login Form */}

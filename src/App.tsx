@@ -19,6 +19,7 @@ import Verification from './pages/Verification';
 import Billing from './pages/Billing';
 import Settings from './pages/Settings';
 import SupplierPortal from './pages/SupplierPortal';
+import IndiaOnboarding from './pages/IndiaOnboarding';
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/supplier-portal" element={<SupplierPortal />} />
+            <Route path="/india-onboarding" element={<IndiaOnboarding />} />
             
             {/* Protected Routes */}
             <Route path="/" element={

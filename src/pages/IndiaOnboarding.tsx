@@ -114,7 +114,7 @@ const IndiaOnboarding: React.FC = () => {
   const completeOnboarding = () => {
     // Save onboarding completion status
     localStorage.setItem('india-onboarding-completed', 'true');
-    navigate('/dashboard');
+    navigate('/');
   };
 
   const renderStepContent = () => {

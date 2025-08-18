@@ -55,6 +55,7 @@ export const INDIA_CONFIG = {
 
   // Regional Languages
   LANGUAGES: {
+    eng: {name: 'English', code: 'eng', rtl: false },
     hi: { name: 'हिंदी', code: 'hi', rtl: false },
     ta: { name: 'தமிழ்', code: 'ta', rtl: false },
     te: { name: 'తెలుగు', code: 'te', rtl: false },
@@ -70,7 +71,7 @@ export const INDIA_CONFIG = {
   // Industry Presets for India
   INDUSTRY_PRESETS: {
     TEXTILES: {
-      name: 'Textiles & Handloom',
+      name: 'Textiles & Garments',
       certifications: ['GOTS', 'Handloom Mark', 'ZED', 'BIS'],
       documents: ['Handloom Certificate', 'GOTS Certificate', 'Factory License'],
       compliance: ['GST', 'MSME', 'Labour License'],
@@ -93,6 +94,73 @@ export const INDIA_CONFIG = {
       documents: ['Type Approval', 'AIS Certificate', 'ARAI Test Report'],
       compliance: ['GST', 'AIS', 'Automotive Standards'],
     },
+    LEATHER:{
+      name: 'Leather Goods',
+      certifications: ['Leather Working Group', 'ISO 14001'],
+      documents: ['LWG Certificate', 'Environmental Clearance'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+    ENGINEERING_GOODS: {
+      name: 'Engineering Goods',
+      certifications: ['ISO 9001', 'CE Marking'],
+      documents: ['Quality Certificate', 'CE Compliance'],
+      compliance: ['GST', 'MSME', 'Quality Standards'],
+    },
+    MANUFACTURING: {
+      name: 'General Manufacturing',
+      certifications: ['ISO 9001', 'ISO 14001'],
+      documents: ['Quality Certificate', 'Environmental Clearance'],
+      compliance: ['GST', 'MSME', 'Labour License'],
+    },
+    ELECTRONICS: {
+      name: 'Electronics & IT',
+      certifications: ['ISO 9001', 'RoHS', 'CE Marking'],
+      documents: ['Quality Certificate', 'RoHS Compliance'],
+      compliance: ['GST', 'MSME', 'IT Act Compliance'],
+    },
+    WOOD_PRODUCTS: {
+      name: 'Wood & Furniture',
+      certifications: ['FSC', 'ISO 14001'],
+      documents: ['FSC Certificate', 'Environmental Clearance'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+    PAPER_PRINTING: {
+      name: 'Paper & Printing',
+      certifications: ['FSC', 'ISO 9001'],
+      documents: ['FSC Certificate', 'Quality Certificate'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+    GEMS_JEWELLERY: {
+      name: 'Gems & Jewellery',
+      certifications: ['GIA', 'IGI', 'BIS'],
+      documents: ['Hallmark Certificate', 'GIA Report'],
+      compliance: ['GST', 'MSME', 'BIS Compliance'],
+    },
+    HANDICRAFTS: {
+      name: 'Handicrafts',
+      certifications: ['Geographical Indication', 'Handloom Mark'],
+      documents: ['GI Certificate', 'Handloom Certificate'],
+      compliance: ['GST', 'MSME', 'Cultural Heritage Compliance'],
+    },
+    RENEWABLE_ENERGY: {
+      name: 'Renewable Energy',
+      certifications: ['ISO 50001', 'IEC Standards'],
+      documents: ['Energy Audit Report', 'Compliance Certificate'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+    NON_METALLIC_MINERALS: {
+      name: 'Non-Metallic Minerals',
+      certifications: ['ISO 9001', 'Environmental Clearance'],
+      documents: ['Mining License', 'Quality Certificate'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+    RUBBER_PLASTICS: {
+      name: 'Rubber & Plastics',
+      certifications: ['ISO 9001', 'RoHS'],
+      documents: ['Quality Certificate', 'RoHS Compliance'],
+      compliance: ['GST', 'MSME', 'Environmental Compliance'],
+    },
+
   },
 
   // Pricing in INR (India-focused)
@@ -183,6 +251,13 @@ export const INDIA_CONFIG = {
     APEDA: 'APEDA Registration',
     CDSCO: 'CDSCO License',
     AIS: 'AIS Certification',
+    ISO: 'ISO Certification',
+    ARAI: 'ARAI Test Report',
+    QUALITY: 'Quality Compliance Certificate',
+    ENVIRONMENTAL: 'Environmental Clearance Certificate',
+    HALLMARK: 'Hallmark Certificate',
+    GI: 'Geographical Indication Certificate',
+
   },
 
   // Pilot States
@@ -215,6 +290,95 @@ export const INDIA_CONFIG = {
       language: 'te',
       focus: 'CDSCO compliance',
     },
+    MAHARASHTRA: {
+      code: 'MH',
+      name: 'Maharashtra',
+      industry: 'Engineering Goods',
+      language: 'mr',
+      focus: 'ISO certification',
+    },
+    GUJARAT: {
+    code: 'GJ',
+    name: 'Gujarat',
+    industry: 'Gems & Jewellery',
+    language: 'gu',
+    focus: 'BIS & Hallmark verification',
+    documents: ['Hallmark Certificate', 'BIS Certification', 'GIA Report'],
+  },
+  WEST_BENGAL: {
+    code: 'WB',
+    name: 'West Bengal',
+    industry: 'Handicrafts',
+    language: 'bn',
+    focus: 'Geographical Indication & Handloom Mark',
+    documents: ['GI Certificate', 'Handloom Certificate'],
+  },
+  KARNATAKA: {
+    code: 'KA',
+    name: 'Karnataka',
+    industry: 'Electronics & IT',
+    language: 'kn',
+    focus: 'RoHS and IT Act compliance',
+    documents: ['RoHS Compliance', 'Quality Certificate', 'IT Act Compliance'],
+  },
+  PUNJAB: {
+    code: 'PB',
+    name: 'Punjab',
+    industry: 'Food Processing',
+    language: 'pa',
+    focus: 'FSSAI & APEDA certification',
+    documents: ['FSSAI License', 'APEDA Registration', 'Organic Certificate'],
+  },
+  RAJASTHAN: {
+    code: 'RJ',
+    name: 'Rajasthan',
+    industry: 'Leather Goods',
+    language: 'hi',
+    focus: 'LWG & Environmental compliance',
+    documents: ['LWG Certificate', 'Environmental Clearance'],
+  },
+  UTTAR_PRADESH: {
+    code: 'UP',
+    name: 'Uttar Pradesh',
+    industry: 'Paper & Printing',
+    language: 'hi',
+    focus: 'FSC mark certification',
+    documents: ['FSC Certificate', 'Quality Certificate'],
+  },
+  MADHYA_PRADESH: {
+    code: 'MP',
+    name: 'Madhya Pradesh',
+    industry: 'Agriculture',
+    language: 'hi',
+    focus: 'FSSAI & APEDA traceability',
+    documents: ['Organic Certificate', 'FSSAI License'],
+  },
+  ODISHA: {
+    code: 'OD',
+    name: 'Odisha',
+    industry: 'Non-Metallic Minerals',
+    language: 'or',
+    focus: 'Mining & environmental clearance',
+    documents: ['Mining License', 'Environmental Clearance'],
+  },
+  ANDHRA_PRADESH: {
+    code: 'AP',
+    name: 'Andhra Pradesh',
+    industry: 'Renewable Energy',
+    language: 'te',
+    focus: 'ISO 50001 & IEC Standards',
+    documents: ['Energy Audit Report', 'Compliance Certificate'],
+  },
+  CHHATTISGARH: {
+    code: 'CG',
+    name: 'Chhattisgarh',
+    industry: 'Rubber & Plastics',
+    language: 'hi',
+    focus: 'RoHS & ISO compliance',
+    documents: ['RoHS Compliance Certificate', 'Quality Certificate'],
+  },
+  
+
   },
 };
 
@@ -238,4 +402,41 @@ export const COMPLIANCE_REQUIREMENTS = {
     industries: ['TEXTILES', 'AUTO'],
     documents: ['BIS Certification', 'ISI Mark'],
   },
+  APEDA: {
+    industries: ['AGRICULTURE'],
+    documents: ['APEDA Registration', 'Organic Certification'],
+  },
+  AIS: {
+    industries: ['AUTO'],
+    documents: ['AIS Certification', 'Type Approval Certificate'],
+  },
+  CDSCO: {
+    industries: ['PHARMA'],
+    documents: ['CDSCO License', 'Drug Manufacturing License'],
+  },
+  ENVIRONMENTAL: {
+    industries: ['MANUFACTURING', 'ENGINEERING_GOODS', 'RUBBER_PLASTICS'],
+    documents: ['Environmental Clearance Certificate', 'Pollution Control Board License'],
+  },
+  QUALITY: {
+    industries: ['MANUFACTURING', 'ENGINEERING_GOODS', 'ELECTRONICS'],
+    documents: ['ISO Certification', 'Quality Compliance Certificate'],
+  },
+  HALLMARK: {
+    industries: ['GEMS_JEWELLERY'],
+    documents: ['Hallmark Certificate', 'Assaying Report'],
+  },
+  GI: {
+    industries: ['HANDICRAFTS'],
+    documents: ['Geographical Indication Certificate', 'Cultural Heritage Compliance'],
+  },
+  ROHS: {
+    industries: ['ELECTRONICS', 'RUBBER_PLASTICS'],
+    documents: ['RoHS Compliance Certificate', 'Environmental Compliance'],
+  },
+  LWG: {
+    industries: ['LEATHER'],
+    documents: ['Leather Working Group Certification', 'Environmental Compliance'],
+  },
+  
 };

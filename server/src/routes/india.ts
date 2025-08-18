@@ -17,10 +17,11 @@ const udyamValidationSchema = Joi.object({
   udyamNumber: Joi.string().pattern(/^UDYAM-[A-Z]{2}-\d{2}-\d{7}$/).required()
 });
 
+
 const industryConfigSchema = Joi.object({
-  industry: Joi.string().valid('TEXTILES', 'AGRICULTURE', 'PHARMA', 'AUTO').required(),
+  industry: Joi.string().valid('TEXTILES','AGRICULTURE','PHARMA','AUTO','LEATHER','ENGINEERING_GOODS','MANUFACTURING','ELECTRONICS','WOOD_PRODUCTS','PAPER_PRINTING','GEMS_JEWELLERY','HANDICRAFTS','RENEWABLE_ENERGY','NON_METALLIC_MINERALS','RUBBER_PLASTICS').required(),
   state: Joi.string().required(),
-  language: Joi.string().valid('hi', 'ta', 'te', 'gu', 'kn', 'ml', 'mr', 'bn', 'pa', 'or').required()
+  language: Joi.string().valid('eg','hi', 'ta', 'te', 'gu', 'kn', 'ml', 'mr', 'bn', 'pa', 'or').required()
 });
 
 // GST Validation endpoint

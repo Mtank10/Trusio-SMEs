@@ -167,7 +167,7 @@ const IndiaOnboarding: React.FC = () => {
                 <button
                   key={key}
                   onClick={() => handleStateSelect(state.code)}
-                  className="p-4 text-left border border-navy-200 rounded-lg hover:border-trust-500 hover:bg-trust-50 transition-all"
+                  className={`${onboardingData.stateSelected?'bg-trust-50 transition-all border-trust-500':''}p-4 text-left border border-navy-200 rounded-lg hover:border-trust-500 hover:bg-trust-50 transition-all`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -175,12 +175,7 @@ const IndiaOnboarding: React.FC = () => {
                       <p className="text-sm text-navy-600">Focus: {state.focus}</p>
                       <p className="text-sm text-trust-600">Industry: {state.industry}</p>
                     </div>
-                    <div className="text-2xl">
-                      {state.code === 'TN' && '🏭'}
-                      {state.code === 'KL' && '🌶️'}
-                      {state.code === 'HR' && '🚗'}
-                      {state.code === 'TS' && '💊'}
-                    </div>
+                    
                   </div>
                 </button>
               ))}

@@ -48,9 +48,48 @@ export class GSTService {
         };
       }
 
-      // Call backend API for validation
+      // For demo purposes, return mock data for valid format
+      if (this.validateGSTINFormat(gstin)) {
+        const stateCode = gstin.substring(0, 2);
+        const stateName = INDIA_CONFIG.GST.STATES[stateCode];
+
+        if (!stateName) {
+          return {
+            isValid: false,
+            error: 'Invalid state code in GSTIN',
+          };
+        }
+
+        return {
+          isValid: true,
+          details: {
+            gstin,
+            legalName: 'Sample Company Private Limited',
+            tradeName: 'Sample Company',
+            registrationDate: '2020-01-01',
+            constitutionOfBusiness: 'Private Limited Company',
+            taxpayerType: 'Regular',
+            status: 'Active',
+            stateCode,
+            stateName,
+            addresses: {
+              principalPlace: {
+                address: '123, Sample Street, Sample Area',
+                pincode: '560001',
+                state: stateName,
+              },
+            },
+          },
+        };
+      }
+
+      // Call backend API for validation (fallback)
       const response = await api.validateGSTIN(gstin);
-      return await response.json();
+      if (response.ok) {
+        return await response.json();
+      } else {
+        throw new Error('API validation failed');
+      }
     } catch (error) {
       return {
         isValid: false,

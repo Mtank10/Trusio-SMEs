@@ -29,6 +29,14 @@ const Login: React.FC = () => {
     });
   };
 
+  const handleIndiaOnboarding = () => {
+    navigate('/india-onboarding');
+  };
+
+  const handleSupplierPortal = () => {
+    navigate('/supplier-portal');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-50 via-trust-50 to-energy-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
@@ -49,6 +57,22 @@ const Login: React.FC = () => {
           <p className="text-sm text-navy-500">
             Sign in to your Indian supply chain transparency platform
           </p>
+        </div>
+
+        {/* Quick Access Buttons */}
+        <div className="flex space-x-2">
+          <button
+            onClick={handleIndiaOnboarding}
+            className="flex-1 px-3 py-2 text-sm bg-trust-100 text-trust-700 rounded-lg hover:bg-trust-200 transition-colors"
+          >
+            India Setup
+          </button>
+          <button
+            onClick={handleSupplierPortal}
+            className="flex-1 px-3 py-2 text-sm bg-energy-100 text-energy-700 rounded-lg hover:bg-energy-200 transition-colors"
+          >
+            Supplier Portal
+          </button>
         </div>
 
         {/* India-specific features highlight */}

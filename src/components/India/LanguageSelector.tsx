@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LanguageService, LanguageConfig } from '../../services/languageService';
 import { Globe, ChevronDown } from 'lucide-react';
 
@@ -12,20 +12,40 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   className = '' 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState(LanguageService.getCurrentLanguage());
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [languages, setLanguages] = useState<LanguageConfig[]>([]);
   
-  const languages = LanguageService.getAvailableLanguages();
+  useEffect(() => {
+    // Initialize languages
+    const availableLanguages = LanguageService.getAvailableLanguages();
+    setLanguages(availableLanguages);
+    
+    // Get stored language preference
+    const storedLanguage = localStorage.getItem('preferred-language') || 'en';
+    setCurrentLanguage(storedLanguage);
+    
+    // Load translations for current language
+    if (storedLanguage !== 'en') {
+      LanguageService.loadTranslations(storedLanguage);
+    }
+  }, []);
+
   const selectedLanguage = languages.find(lang => lang.code === currentLanguage);
 
   const handleLanguageSelect = async (languageCode: string) => {
     try {
-      await LanguageService.loadTranslations(languageCode);
+      if (languageCode !== 'en') {
+        await LanguageService.loadTranslations(languageCode);
+      }
       setCurrentLanguage(languageCode);
       setIsOpen(false);
       onLanguageChange?.(languageCode);
       
       // Store preference in localStorage
       localStorage.setItem('preferred-language', languageCode);
+      
+      // Trigger a page refresh to apply language changes
+      window.location.reload();
     } catch (error) {
       console.error('Failed to change language:', error);
     }

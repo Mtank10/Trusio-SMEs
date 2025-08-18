@@ -4,10 +4,12 @@ import { api } from '../config/api';
 import Layout from '../components/Layout/Layout';
 import SupplyChainMap from '../components/SupplyChain/SupplyChainMap';
 import { SupplyChainNode, Product } from '../types';
-import { Map } from 'lucide-react';
+import { Map, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const SupplyChain: React.FC = () => {
   const { state: authState } = useAuth();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [supplyChainData, setSupplyChainData] = useState<Record<string, SupplyChainNode[]>>({});
   const [loading, setLoading] = useState(true);
@@ -30,25 +32,17 @@ const SupplyChain: React.FC = () => {
       const productsData = await productsRes.json();
       setProducts(productsData);
 
-      // Fetch supply chain data for each product
-      const supplyChainPromises = productsData.map(async (product: Product) => {
-        try {
-          const response = await api.getSupplyChain(product.id, authState.token!);
-          if (response.ok) {
-            const data = await response.json();
-            return { productId: product.id, data };
-          }
-        } catch (error) {
-          console.error(`Error fetching supply chain for product ${product.id}:`, error);
+      // Build supply chain data from products
+      const supplyChainMap: Record<string, SupplyChainNode[]> = {};
+      
+      productsData.forEach((product: Product) => {
+        if (product.suppliers && product.suppliers.length > 0) {
+          const nodes = convertSuppliersToNodes(product.suppliers);
+          supplyChainMap[product.id] = nodes;
+        } else {
+          supplyChainMap[product.id] = [];
         }
-        return { productId: product.id, data: [] };
       });
-
-      const supplyChainResults = await Promise.all(supplyChainPromises);
-      const supplyChainMap = supplyChainResults.reduce((acc, result) => {
-        acc[result.productId] = result.data;
-        return acc;
-      }, {} as Record<string, SupplyChainNode[]>);
 
       setSupplyChainData(supplyChainMap);
     } catch (error) {
@@ -128,11 +122,22 @@ const SupplyChain: React.FC = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-800">Supply Chain</h1>
-          <p className="text-navy-600">
-            Visualize and manage your supply chain network
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-navy-800">Supply Chain</h1>
+            <p className="text-navy-600">
+              Visualize and manage your supply chain network
+            </p>
+          </div>
+          {products.length > 0 && (
+            <button
+              onClick={() => navigate('/suppliers')}
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 transition-all shadow-trust"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Suppliers</span>
+            </button>
+          )}
         </div>
 
         {products.length === 0 ? (
@@ -140,16 +145,22 @@ const SupplyChain: React.FC = () => {
             <div className="w-16 h-16 bg-navy-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Map className="w-8 h-8 text-navy-400" />
             </div>
-            <h3 className="text-lg font-medium text-navy-800 mb-2">No supply chain data</h3>
+            <h3 className="text-lg font-medium text-navy-800 mb-2">No products found</h3>
             <p className="text-navy-600 mb-4">
-              Add products and suppliers to visualize your supply chain
+              Add products first to start building your supply chain
             </p>
+            <button
+              onClick={() => navigate('/products')}
+              className="px-4 py-2 bg-gradient-to-r from-trust-600 to-energy-600 text-white rounded-lg hover:from-trust-700 hover:to-energy-700 transition-all"
+            >
+              Add Your First Product
+            </button>
           </div>
         ) : (
           <div className="space-y-6">
             {products.map((product) => {
               const suppliers = product.suppliers || [];
-              const nodes = convertSuppliersToNodes(suppliers);
+              const nodes = supplyChainData[product.id] || [];
               
               return (
                 <div key={product.id} className="space-y-4">
@@ -157,7 +168,8 @@ const SupplyChain: React.FC = () => {
                     <h3 className="text-lg font-medium text-navy-800">{product.name}</h3>
                     <p className="text-sm text-navy-600">{product.description}</p>
                     <p className="text-sm text-navy-500 mt-1">
-                      {suppliers.length} suppliers across {Math.max(...suppliers.map(s => s.tier), 0)} tiers
+                      {suppliers.length} suppliers
+                      {suppliers.length > 0 && ` across ${Math.max(...suppliers.map(s => s.tier), 0)} tiers`}
                     </p>
                   </div>
                   
@@ -168,7 +180,13 @@ const SupplyChain: React.FC = () => {
                     />
                   ) : (
                     <div className="text-center py-8 bg-navy-50 rounded-lg">
-                      <p className="text-navy-600">No suppliers added for this product yet</p>
+                      <p className="text-navy-600 mb-4">No suppliers added for this product yet</p>
+                      <button
+                        onClick={() => navigate('/suppliers')}
+                        className="px-4 py-2 bg-trust-600 text-white rounded-lg hover:bg-trust-700 transition-colors"
+                      >
+                        Add Suppliers
+                      </button>
                     </div>
                   )}
                 </div>

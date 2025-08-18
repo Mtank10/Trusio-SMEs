@@ -1,13 +1,23 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { LogOut, Settings, Bell, User, MapPin } from 'lucide-react';
 import LanguageSelector from '../India/LanguageSelector';
 
 const Header: React.FC = () => {
   const { state, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
+  };
+
+  const handleIndiaOnboarding = () => {
+    navigate('/india-onboarding');
+  };
+
+  const handleSupplierPortal = () => {
+    navigate('/supplier-portal');
   };
 
   return (
@@ -45,7 +55,10 @@ const Header: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-2">
-              <button className="p-2 text-navy-400 hover:text-navy-600 hover:bg-navy-50 rounded-full transition-colors">
+              <button 
+                onClick={() => navigate('/settings')}
+                className="p-2 text-navy-400 hover:text-navy-600 hover:bg-navy-50 rounded-full transition-colors"
+              >
                 <Settings className="w-5 h-5" />
               </button>
               <button 
@@ -54,20 +67,34 @@ const Header: React.FC = () => {
               >
                 <LogOut className="w-5 h-5" />
               </button>
-              <span>Trusio India</span>
             </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleIndiaOnboarding}
+                className="text-xs px-2 py-1 bg-trust-100 text-trust-700 rounded-full hover:bg-trust-200 transition-colors"
+              >
+                India Setup
+              </button>
+              <button
+                onClick={handleSupplierPortal}
+                className="text-xs px-2 py-1 bg-energy-100 text-energy-700 rounded-full hover:bg-energy-200 transition-colors"
+              >
+                Supplier Portal
+              </button>
+            </div>
+
             <div className="ml-2 flex items-center space-x-1 px-2 py-1 bg-trust-50 rounded-full">
               <MapPin className="w-3 h-3 text-trust-600" />
               <span className="text-xs text-trust-700 font-medium">भारत</span>
             </div>
+
+            <LanguageSelector />
           </div>
         </div>
       </div>
-      <LanguageSelector />
     </header>
   );
 };
-
-          
 
 export default Header;

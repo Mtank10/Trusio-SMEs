@@ -257,7 +257,7 @@ const IndiaOnboarding: React.FC = () => {
           <div className="text-center space-y-6">
             <div className="w-20 h-20 bg-sustainability-100 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle className="w-10 h-10 text-sustainability-600" />
-            </div>
+            </div> 
             <div>
               <h2 className="text-2xl font-bold text-navy-800 mb-2">
                 Setup Complete!

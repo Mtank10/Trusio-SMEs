@@ -171,7 +171,7 @@ model UserIndiaProfile {
   business_pincode    String?  @db.VarChar(10)
   industry_type       String?  @db.VarChar(20)
   enterprise_category String?  @db.VarChar(10)
-  preferred_language  String   @default("hi") @db.VarChar(5)
+  preferred_language  String   @default("eg") @db.VarChar(5)
   whatsapp_number     String?  @db.VarChar(15)
   created_at          DateTime @default(now()) @db.Timestamp(3)
   updated_at          DateTime @default(now()) @db.Timestamp(3)

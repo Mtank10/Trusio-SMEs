@@ -7,19 +7,22 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
+  onboardingCompleted: boolean;
 }
 
 type AuthAction = 
   | { type: 'SET_USER'; payload: { user: User; token: string } }
   | { type: 'LOGOUT' }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string | null };
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_ONBOARDING_STATUS'; payload: boolean };
 
 const initialState: AuthState = {
   user: null,
   token: localStorage.getItem('token'),
-  loading: false,
+  loading: true, // Start with loading true to check auth status
   error: null,
+  onboardingCompleted: localStorage.getItem('onboardingCompleted') === 'true',
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -32,20 +35,30 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         token: action.payload.token,
         loading: false,
         error: null,
+        onboardingCompleted: action.payload.user.onboardingCompleted || false,
       };
     case 'LOGOUT':
       localStorage.removeItem('token');
+      localStorage.removeItem('onboardingCompleted');
       return {
         ...state,
         user: null,
         token: null,
         loading: false,
         error: null,
+        onboardingCompleted: false,
       };
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
+    case 'SET_ONBOARDING_STATUS':
+      localStorage.setItem('onboardingCompleted', action.payload.toString());
+      return { 
+        ...state, 
+        onboardingCompleted: action.payload,
+        user: state.user ? { ...state.user, onboardingCompleted: action.payload } : null
+      };
     default:
       return state;
   }
@@ -56,6 +69,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, companyName: string) => Promise<void>;
   logout: () => void;
+  completeOnboarding: () => void;
+  checkAuthStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -74,6 +89,44 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // Function to check if token is valid and get user info
+  const checkAuthStatus = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      dispatch({ type: 'SET_LOADING', payload: false });
+      return;
+    }
+
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      // Verify token with server
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/auth/verify`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        dispatch({ 
+          type: 'SET_USER', 
+          payload: { user: userData, token } 
+        });
+      } else {
+        // Token is invalid, clear it
+        localStorage.removeItem('token');
+        localStorage.removeItem('onboardingCompleted');
+        dispatch({ type: 'LOGOUT' });
+      }
+    } catch (error) {
+      console.error('Auth verification failed:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('onboardingCompleted');
+      dispatch({ type: 'LOGOUT' });
+    }
+  };
 
   const login = async (email: string, password: string) => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -112,6 +165,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: 'SET_USER', 
         payload: { user: data.user, token: data.token } 
       });
+      
+      // New users need to complete onboarding
+      dispatch({ type: 'SET_ONBOARDING_STATUS', payload: false });
     } catch (error) {
       dispatch({ 
         type: 'SET_ERROR', 
@@ -125,18 +181,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  // Check if user is already logged in on app start
+  const completeOnboarding = () => {
+    dispatch({ type: 'SET_ONBOARDING_STATUS', payload: true });
+  };
+
+  // Check authentication status on app load
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token && !state.user) {
-      // In a real app, you'd verify the token with the server
-      // For now, we'll just clear it if it exists but no user is set
-      localStorage.removeItem('token');
-    }
-  }, [state.user]);
+    checkAuthStatus();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ state, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+      state, 
+      login, 
+      register, 
+      logout, 
+      completeOnboarding,
+      checkAuthStatus 
+    }}>
       {children}
     </AuthContext.Provider>
   );

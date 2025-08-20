@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -21,65 +22,85 @@ import Settings from './pages/Settings';
 import SupplierPortal from './pages/SupplierPortal';
 import IndiaOnboarding from './pages/IndiaOnboarding';
 
+const AppContent: React.FC = () => {
+  const { state: authState } = useAuth();
+
+  if (authState.loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/login" element={authState.user ? <Navigate to="/" /> : <Login />} />
+      <Route path="/register" element={authState.user ? <Navigate to="/" /> : <Register />} />
+      <Route path="/supplier-portal" element={<SupplierPortal />} />
+      
+      {/* Redirect to onboarding if not completed */}
+      <Route path="/india-onboarding" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Navigate to="/" /> : <IndiaOnboarding />}
+        </ProtectedRoute>
+      } />
+      
+      {/* Protected Routes - redirect to onboarding if not completed */}
+      <Route path="/" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Dashboard /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      
+      {/* All other protected routes */}
+      <Route path="/products" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Products /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/suppliers" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Suppliers /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/supply-chain" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <SupplyChain /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/surveys" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Surveys /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/reports" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Reports /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/verification" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Verification /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/billing" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Billing /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          {authState.onboardingCompleted ? <Settings /> : <Navigate to="/india-onboarding" />}
+        </ProtectedRoute>
+      } />
+    </Routes>
+  );
+};
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <AppProvider>
         <Router>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/supplier-portal" element={<SupplierPortal />} />
-            <Route path="/india-onboarding" element={<IndiaOnboarding />} />
-            
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/products" element={
-              <ProtectedRoute>
-                <Products />
-              </ProtectedRoute>
-            } />
-            <Route path="/suppliers" element={
-              <ProtectedRoute>
-                <Suppliers />
-              </ProtectedRoute>
-            } />
-            <Route path="/supply-chain" element={
-              <ProtectedRoute>
-                <SupplyChain />
-              </ProtectedRoute>
-            } />
-            <Route path="/surveys" element={
-              <ProtectedRoute>
-                <Surveys />
-              </ProtectedRoute>
-            } />
-            <Route path="/reports" element={
-              <ProtectedRoute>
-                <Reports />
-              </ProtectedRoute>
-            } />
-            <Route path="/verification" element={
-              <ProtectedRoute>
-                <Verification />
-              </ProtectedRoute>
-            } />
-            <Route path="/billing" element={
-              <ProtectedRoute>
-                <Billing />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            } />
-          </Routes>
+          <AppContent />
         </Router>
       </AppProvider>
     </AuthProvider>
